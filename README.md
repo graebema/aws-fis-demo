@@ -1,2 +1,2 @@
 # aws-fis-demo
-Demo for AWS fault injection service
+Demo for AWS fault injection service (FIS)
