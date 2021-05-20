@@ -1,0 +1,4 @@
+iam_account_id = "_your_aws_account_id_"
+zone           = "aws.foo.com"
+fqdn           = "fis.aws.foo.com"
+asg_name       = "ec2-web-asg"

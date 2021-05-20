@@ -8,3 +8,14 @@ Tested with terraform 0.15.4
 
 As terraform does not yet support the fis service, the fis experiment
 is created with a cloudformation template, installed by terraform.
+
+Usage:
+Adapt the values in locals.tf to your needs
+Create a terraform.tfvars file with your variable settings.
+
+This project creates a vpc, an ec2 autoscaling group, an application loadbalancer
+with ssl certificate in from of the ec2 autoscaling group. The launch configuration for the 
+ec2 instances deploys an ubuntu ami with an installed busybox httpd. The httpd replies
+with the instance id of the ec2 instance.
+The fis cloudformation template deploys a fis experiments that terminates 2 of the
+ec2 instances of the autoscaling group.
