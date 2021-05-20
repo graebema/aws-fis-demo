@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: v1.0 FIS experiment template
+###############################################################
+# Parameters
+###############################################################
+Parameters:
+  EC2NameTag:
+    Type: String
+    ConstraintDescription: Name Tag of EC2 Instances
+    Default: 'ec2-web-asg'
+###############################################################
+# Resources
+###############################################################
+Resources:
+  ExperimentTemplate:
+    Type: 'AWS::FIS::ExperimentTemplate'
+    Properties:
+      Actions:
+        'terminate-asg':
+          ActionId: 'aws:ec2:terminate-instances'
+          Targets:
+            Instances: asg # Instances seems to be an undocumented magic value
+      Description: 'terminate ec2 instances'
+      RoleArn: !GetAtt 'Role.Arn'
+      Targets:
+        asg:
+          ResourceTags:
+            'Name': !Ref EC2NameTag # select resource by name tag, value given as parameter
+          ResourceType: 'aws:ec2:instance'
+          SelectionMode: 'COUNT(2)' # terminate 2 instances
+      StopConditions:
+      - Source: 'aws:cloudwatch:alarm'
+        Value: !GetAtt 'Alarm.Arn'
+      Tags: # required field for unknown reasons
+        Environment: Dev
+  Alarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'FIS stop condition'
+      Namespace: 'AWS/SQS'
+      MetricName: ApproximateAgeOfOldestMessage
+      Dimensions:
+      - Name: QueueName
+        Value: 'FISStopQueue'
+      Statistic: Maximum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 300 # 5 minutes
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+  Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: 'fis.amazonaws.com'
+          Action: 'sts:AssumeRole'
+      Policies:
+      - PolicyName: fis
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: AllowFISExperimentRoleReadOnly
+            Effect: Allow
+            Action:
+            - 'ec2:DescribeInstances'
+            - 'ecs:DescribeClusters'
+            - 'ecs:ListContainerInstances'
+            - 'eks:DescribeNodegroup'
+            - 'iam:ListRoles'
+            - 'rds:DescribeDBInstances'
+            - 'rds:DescribeDbClusters'
+            - 'ssm:ListCommands'
+            Resource: '*'
+          - Sid: AllowFISExperimentRoleEC2Actions
+            Effect: Allow
+            Action:
+            - 'ec2:RebootInstances'
+            - 'ec2:StopInstances'
+            - 'ec2:StartInstances'
+            - 'ec2:TerminateInstances'
+            Resource: !Sub 'arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:instance/*'
+          - Sid: AllowFISExperimentRoleECSActions
+            Effect: Allow
+            Action:
+            - 'ecs:UpdateContainerInstancesState'
+            - 'ecs:ListContainerInstances'
+            Resource: !Sub 'arn:${AWS::Partition}:ecs:${AWS::Region}:${AWS::AccountId}:container-instance/*'
+          - Sid: AllowFISExperimentRoleEKSActions
+            Effect: Allow
+            Action: 'ec2:TerminateInstances'
+            Resource: !Sub 'arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:instance/*'
+          - Sid: AllowFISExperimentRoleFISActions
+            Effect: Allow
+            Action:
+            - 'fis:InjectApiInternalError'
+            - 'fis:InjectApiThrottleError'
+            - 'fis:InjectApiUnavailableError'
+            Resource: !Sub 'arn:${AWS::Partition}:fis:${AWS::Region}:${AWS::AccountId}:experiment/*'
+          - Sid: AllowFISExperimentRoleRDSReboot
+            Effect: Allow
+            Action: 'rds:RebootDBInstance'
+            Resource: !Sub 'arn:${AWS::Partition}:rds:${AWS::Region}:${AWS::AccountId}:db:*'
+          - Sid: AllowFISExperimentRoleRDSFailOver
+            Effect: Allow
+            Action: 'rds:FailoverDBCluster'
+            Resource: !Sub 'arn:${AWS::Partition}:rds:${AWS::Region}:${AWS::AccountId}:cluster:*'
+          - Sid: AllowFISExperimentRoleSSMSendCommand
+            Effect: Allow
+            Action: 'ssm:SendCommand'
+            Resource:
+            - !Sub 'arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:instance/*'
+            - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}::document/*' # AWS managed documents
+            - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:document/*'
+          - Sid: AllowFISExperimentRoleSSMCancelCommand
+            Effect: Allow
+            Action: 'ssm:CancelCommand'
+            Resource: '*'
