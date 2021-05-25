@@ -22,3 +22,8 @@ with the instance id of the ec2 instance. The access to
 The fis cloudformation template deploys a fis experiment that terminates 2 of the
 ec2 instances of the autoscaling group. The fis experiment needs to be started manually
 in the aws console.
+
+
+**Show your support**
+
+Give a ⭐ if this project was helpful in any way!
