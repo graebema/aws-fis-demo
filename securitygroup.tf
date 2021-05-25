@@ -17,25 +17,6 @@ resource "aws_security_group" "allow-ping" {
   }
 }
 
-resource "aws_security_group" "allow-all-from-home" {
-  vpc_id      = module.vpc.vpc_id
-  name        = "allow-all-from-home"
-  description = "security group that allows all-from-home and all egress traffic"
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = [local.workstation-external-cidr]
-  }
-}
-
 resource "aws_security_group" "allow-https" {
   vpc_id      = module.vpc.vpc_id
   name        = "allow-https"
