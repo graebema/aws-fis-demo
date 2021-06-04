@@ -7,8 +7,6 @@ Demo for AWS fault injection service (FIS)
 **Prerequisites:**
 You have an AWS account with a configured route53 zone.
 
-Tested with terraform 0.15.4
-
 As terraform does not yet support the fis service, the fis experiment
 is created with a cloudformation template, installed by terraform.
 
@@ -26,6 +24,7 @@ The fis cloudformation template deploys a fis experiment that terminates 2 of th
 ec2 instances of the autoscaling group. The fis experiment needs to be started manually
 in the aws console.
 
+This code has been tested with terraform 0.15.4
 
 **Show your support**
 
