@@ -1,6 +1,3 @@
-This is the code for a [tutorial on Medium](https://medium.com/) I recently published.
-
-
 # aws-fis-demo
 A demo for the AWS Fault Injection Service (FIS).
 
