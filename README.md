@@ -2,29 +2,29 @@ This is the code for a [tutorial on Medium](https://medium.com/) I recently publ
 
 
 # aws-fis-demo
-Demo for AWS fault injection service (FIS)
+Demo for AWS Fault Injection Service (FIS)
 
 **Prerequisites:**
 You have an AWS account with a configured route53 zone.
 
-As terraform does not yet support the fis service, the fis experiment
-is created with a cloudformation template, installed by Terraform.
+As Terraform does not yet support the FIS service, the FIS experiment
+is created with a Cloudformation template, installed by Terraform.
 
 **Usage:**
 Adapt the values in locals.tf to your needs.
 Create a terraform.tfvars file with your variable settings.
 
-This project creates a vpc, an ec2 autoscaling group, and an application loadbalancer
-(with ssl certificate and s3 access logs) in front of the ec2 autoscaling group. The launch configuration for the 
-ec2 instances deploys an Ubuntu ami with an installed busybox httpd. The httpd replies
-with the instance id of the specific ec2. The access to
+This project creates a VPC, an EC2 autoscaling group, and an application loadbalancer
+(with ssl certificate and s3 access logs) in front of the EC2 autoscaling group. The launch configuration for the 
+EC2 instances deploys an Ubuntu ami with an installed busybox httpd. The httpd replies
+with the instance id of the specific EC2. The access to
 `https://var.fqdn/` is limited to the workstation ip from which you executed Terraform.
 
-The fis cloudformation template deploys a fis experiment that terminates 2 of the
-ec2 instances of the autoscaling group. The fis experiment needs to be started manually
-in the aws console.
+The FIS Cloudformation template deploys an FIS experiment that terminates 2 of the
+EC2 instances of the autoscaling group. The FIS experiment needs to be started manually
+in the AWS console.
 
-This code has been tested with Terraform 0.15.4
+This code has been tested with Terraform v0.15.4.
 
 **Show your support**
 
