@@ -1,4 +1,4 @@
-This is the code for a tutorial I made on medium.
+This is the code for a [tutorial on Medium](https://medium.com/) I recently published.
 
 
 # aws-fis-demo
