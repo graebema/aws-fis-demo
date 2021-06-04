@@ -1,3 +1,6 @@
+This is the code for a tutorial I made on medium.
+
+
 # aws-fis-demo
 Demo for AWS fault injection service (FIS)
 
