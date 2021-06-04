@@ -17,7 +17,7 @@ Create a terraform.tfvars file with your variable settings.
 This project creates a VPC, an EC2 autoscaling group, and an application loadbalancer
 (with ssl certificate and S3 access logs) in front of the EC2 autoscaling group. The launch configuration for the 
 EC2 instances deploys an Ubuntu ami with an installed busybox httpd. The httpd replies
-with the instance id of the specific EC2. The access to
+with the instance ID of the specific EC2. The access to
 `https://var.fqdn/` is limited to the workstation ip from which you executed Terraform.
 
 The FIS Cloudformation template deploys a FIS experiment that terminates 2 of the
