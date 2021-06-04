@@ -20,7 +20,7 @@ EC2 instances deploys an Ubuntu ami with an installed busybox httpd. The httpd r
 with the instance id of the specific EC2. The access to
 `https://var.fqdn/` is limited to the workstation ip from which you executed Terraform.
 
-The FIS Cloudformation template deploys an FIS experiment that terminates 2 of the
+The FIS Cloudformation template deploys a FIS experiment that terminates 2 of the
 EC2 instances of the autoscaling group. The FIS experiment needs to be started manually
 in the AWS console.
 
